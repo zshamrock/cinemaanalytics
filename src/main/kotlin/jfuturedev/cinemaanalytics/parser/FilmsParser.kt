@@ -15,6 +15,7 @@ abstract class FilmsParser {
     companion object {
         private const val BASE_ENDPOINT_REST_URL = "https://en.wikipedia.org/api/rest_v1/page/html"
         private const val HEADER = 1
+        private const val DEFAULT_ROWSPAN = "1"
     }
 
     private fun getDocument(title: String, revision: String): Document {
@@ -50,7 +51,7 @@ abstract class FilmsParser {
                     if (openingDayRowSpan == 0) {
                         day = data[index].text().toInt()
                         logger.debug { "Processing day $day" }
-                        openingDayRowSpan = data[index++].attr("rowspan").ifEmpty { "1" }.toInt()
+                        openingDayRowSpan = data[index++].attr("rowspan").ifEmpty { DEFAULT_ROWSPAN }.toInt()
                     }
                     val genres = getGenres(data, index)
                     val genre = Genre.parse(genres)

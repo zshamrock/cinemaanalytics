@@ -10,6 +10,10 @@ class ChinaFilmsParser : FilmsParser() {
         private const val GENRES_INDEX = 3
     }
 
+    override fun getQuarters(document: Document): Elements {
+        return document.select("section[data-mw-section-id=2] table")
+    }
+
     override fun getTitle(data: Elements, index: Int): String {
         return data[TITLE_INDEX + index].text()
     }
@@ -20,9 +24,5 @@ class ChinaFilmsParser : FilmsParser() {
 
     override fun getGenres(data: Elements, index: Int): String {
         return data[GENRES_INDEX + index].text()
-    }
-
-    override fun getQuarters(document: Document): Elements {
-        return document.select("section[data-mw-section-id=2] table")
     }
 }
