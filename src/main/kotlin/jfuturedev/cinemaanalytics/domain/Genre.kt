@@ -2,15 +2,17 @@ package jfuturedev.cinemaanalytics.domain
 
 import java.util.*
 
-enum class Genre(val title: String = "") {
+enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
     ACTION,
     ADVENTURE,
     ANIMATION,
-    BIOGRAPHY,
+    BIOGRAPHICAL,
+    BIOGRAPHY(alias = setOf(BIOGRAPHICAL)),
     CHILD,
     CHILDREN,
     COMEDY,
     CRIME,
+    DISASTER,
     DOCUMENTARY,
     DRAMA,
     FAMILY,
@@ -20,6 +22,7 @@ enum class Genre(val title: String = "") {
     LOVE,
     MUSIC,
     MUSICAL,
+    MYSTERY,
     NEO_NOIR("Neo-Noir"),
     POST_APOCALYPTIC("Post-apocalyptic"),
     ROMANCE,
@@ -27,7 +30,8 @@ enum class Genre(val title: String = "") {
     SONG_AND_DANCE("Song and Dance"),
     SUSPENSE,
     THRILLER,
-    WAR;
+    WAR,
+    WESTERN;
 
     companion object {
         @JvmStatic
