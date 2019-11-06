@@ -2,8 +2,12 @@ package jfuturedev.cinemaanalytics.parser
 
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.Movie
+import mu.KotlinLogging
 import org.jsoup.Jsoup
 import java.time.Month
+import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 class ChinaFilmsParser {
     companion object {
@@ -24,37 +28,44 @@ class ChinaFilmsParser {
         var totalSkipped = 0
         var month: String = Month.JANUARY.name
         var day: Int = 1
-        return quarters.map { it.select("tr") }.flatMap { rows ->
+        return quarters.take(4).map { it.select("tr") }.flatMap { rows ->
             rows.drop(HEADER).mapNotNull { row ->
                 val data = row.children()
-                var index = 0
-                if (openingMonthRowSpan == 0) {
-                    month = data[index].text().replace(" ", "")
-                    openingMonthRowSpan = data[index++].attr("rowspan").toInt()
-                }
-                if (openingDayRowSpan == 0) {
-                    day = data[index].text().toInt()
-                    openingDayRowSpan = data[index++].attr("rowspan").toInt()
-                }
-                val genres = data[GENRES_INDEX + index].text()
-                val genre = Genre.parse(genres)
-                val movie = if (genre == null) {
-                    totalSkipped++
-                    println("Skip movie with unsupported genres $genres / $totalSkipped")
+                if (data.isEmpty()) {
                     null
                 } else {
-                    Movie(
-                        year,
-                        Month.valueOf(month),
-                        day,
-                        data[TITLE_INDEX + index].text(),
-                        data[DIRECTOR_INDEX + index].text(),
-                        genre
-                    )
+                    var index = 0
+                    if (openingMonthRowSpan == 0) {
+                        month = data[index].text().replace(" ", "").toUpperCase(Locale.ROOT)
+                        logger.debug { "Processing month $month" }
+                        openingMonthRowSpan = data[index++].attr("rowspan").toInt()
+                    }
+                    if (openingDayRowSpan == 0) {
+                        day = data[index].text().toInt()
+                        logger.debug { "Processing day $day" }
+                        openingDayRowSpan = data[index++].attr("rowspan").toInt()
+                    }
+                    val genres = data[GENRES_INDEX + index].text()
+                    val genre = Genre.parse(genres)
+                    val movie = if (genre == null) {
+                        totalSkipped++
+                        logger.warn { "Skip movie with unsupported genres $genres / $totalSkipped" }
+                        null
+                    } else {
+                        Movie(
+                            year,
+                            Month.valueOf(month),
+                            day,
+                            data[TITLE_INDEX + index].text(),
+                            data[DIRECTOR_INDEX + index].text(),
+                            genre
+                        )
+                    }
+                    openingDayRowSpan--
+                    openingMonthRowSpan--
+                    movie?.let { logger.debug { it } }
+                    movie
                 }
-                openingDayRowSpan--
-                openingMonthRowSpan--
-                movie
             }
         }
     }

@@ -7,6 +7,7 @@ enum class Genre(val title: String = "") {
     ADVENTURE,
     ANIMATION,
     BIOGRAPHY,
+    CHILD,
     CHILDREN,
     COMEDY,
     CRIME,
@@ -14,6 +15,7 @@ enum class Genre(val title: String = "") {
     DRAMA,
     FAMILY,
     FANTASY,
+    HISTORY,
     HORROR,
     LOVE,
     MUSIC,
@@ -23,6 +25,7 @@ enum class Genre(val title: String = "") {
     ROMANCE,
     SCI_FI("Sci-Fi"),
     SONG_AND_DANCE("Song and Dance"),
+    SUSPENSE,
     THRILLER,
     WAR;
 
