@@ -8,5 +8,10 @@ data class Movie(
     val day: Int,
     val title: String,
     val director: String,
-    val genre: Genre
-)
+    val genre: Genre,
+    val gross: Long = UNKNOWN_GROSS
+) {
+    companion object {
+        const val UNKNOWN_GROSS = 0L
+    }
+}

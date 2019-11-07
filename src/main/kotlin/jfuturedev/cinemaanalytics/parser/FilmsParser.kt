@@ -1,7 +1,6 @@
 package jfuturedev.cinemaanalytics.parser
 
-import jfuturedev.cinemaanalytics.domain.Genre
-import jfuturedev.cinemaanalytics.domain.Movie
+import jfuturedev.cinemaanalytics.domain.*
 import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -27,15 +26,27 @@ abstract class FilmsParser {
             .get()
     }
 
-    fun parse(year: Int, path: String): List<Movie> {
+    fun parse(source: Source): List<Movie> {
+        return when (source) {
+            is RemoteSource -> {
+                parse(source.year, source.title, source.revision)
+            }
+            is LocalSource -> {
+                parse(source.year, source.path)
+            }
+        }
+    }
+
+    private fun parse(year: Int, path: String): List<Movie> {
         return parse(year, Jsoup.parse(File(path), StandardCharsets.UTF_8.name()))
     }
 
-    fun parse(year: Int, title: String, revision: String): List<Movie> {
+    private fun parse(year: Int, title: String, revision: String): List<Movie> {
         return parse(year, getDocument(title, revision))
     }
 
     private fun parse(year: Int, document: Document): List<Movie> {
+        val rankings = parseRankings(document)
         val quarters = getQuarters(document)
         var openingMonthRowSpan = 0
         var openingDayRowSpan = 0
@@ -69,13 +80,15 @@ abstract class FilmsParser {
                         logger.warn { "Skip movie with unsupported genres $genres / $totalSkipped" }
                         null
                     } else {
+                        val title = getTitle(data, index)
                         Movie(
                             year,
                             Month.valueOf(month),
                             day,
-                            getTitle(data, index),
+                            title,
                             getDirector(data, index),
-                            genre
+                            genre,
+                            rankings.getOrDefault(title, Movie.UNKNOWN_GROSS)
                         )
                     }
                     openingDayRowSpan--
@@ -87,11 +100,30 @@ abstract class FilmsParser {
         }
     }
 
-    abstract fun getQuarters(document: Document): Elements
+    internal fun parseRankings(document: Document): Map<String, Long> {
+        val rankings = getRankings(document)
+        // There is a small inconsistency between completed year, and current year data, where extra empty rows are
+        // added to to highlight the title which are still in cinemas, so exclude those from parsing
+        return rankings.select("tr").drop(HEADER).filterNot { it.hasClass("mw-empty-elt") }.associate { row ->
+            val data = row.children()
+            val ranking = parseRanking(data)
+            Pair(ranking.first, parseGross(ranking.second))
+        }
+    }
 
-    abstract fun getTitle(data: Elements, index: Int): String
+    protected abstract fun parseRanking(data: Elements): Pair<String, String>
 
-    abstract fun getDirector(data: Elements, index: Int): String
+    private fun parseGross(gross: String): Long {
+        return gross.substring(1).replace(",", "").substringBefore("[").toLong()
+    }
 
-    abstract fun getGenres(data: Elements, index: Int): String
+    protected abstract fun getRankings(document: Document): Elements
+
+    protected abstract fun getQuarters(document: Document): Elements
+
+    protected abstract fun getTitle(data: Elements, index: Int): String
+
+    internal abstract fun getDirector(data: Elements, index: Int): String
+
+    protected abstract fun getGenres(data: Elements, index: Int): String
 }

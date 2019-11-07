@@ -5,9 +5,19 @@ import org.jsoup.select.Elements
 
 class ChinaFilmsParser : FilmsParser() {
     companion object {
+        private const val RANKING_TITLE_INDEX = 1
+        private const val RANKING_GROSS_INDEX = 2
         private const val TITLE_INDEX = 0
         private const val DIRECTOR_INDEX = 1
         private const val GENRES_INDEX = 3
+    }
+
+    override fun getRankings(document: Document): Elements {
+        return document.select("section[data-mw-section-id=1] table")
+    }
+
+    override fun parseRanking(data: Elements): Pair<String, String> {
+        return Pair(data[RANKING_TITLE_INDEX].text(), data[RANKING_GROSS_INDEX].text())
     }
 
     override fun getQuarters(document: Document): Elements {

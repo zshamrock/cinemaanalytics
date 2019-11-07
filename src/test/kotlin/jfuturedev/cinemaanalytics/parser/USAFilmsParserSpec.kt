@@ -5,15 +5,33 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 import jfuturedev.cinemaanalytics.domain.Genre
+import jfuturedev.cinemaanalytics.domain.LocalSource
 import jfuturedev.cinemaanalytics.domain.Movie
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import java.io.File
+import java.nio.charset.StandardCharsets
 import java.time.Month
+
+private val topFilms = mapOf(
+    "Star Wars: The Last Jedi" to 620_181_382L,
+    "Beauty and the Beast" to 504_014_165L,
+    "Wonder Woman" to 412_563_408L,
+    "Jumanji: Welcome to the Jungle" to 404_515_480L,
+    "Guardians of the Galaxy Vol. 2" to 389_813_101L,
+    "Spider-Man: Homecoming" to 334_201_140L,
+    "It" to 327_481_748L,
+    "Thor: Ragnarok" to 315_058_289L,
+    "Despicable Me 3" to 264_624_300L,
+    "Justice League" to 229_024_295L
+)
+
+private val dataPath = USAFilmsParserSpec::class.java.getResource("/data/usa-2017.html").path
 
 class USAFilmsParserSpec : StringSpec({
     "parse local file" {
-        val movies =
-            USAFilmsParser().parse(2017, USAFilmsParserSpec::class.java.getResource("/data/usa-2017.html").path)
+        val movies = USAFilmsParser().parse(LocalSource(2017, dataPath))
         movies.size shouldBe 238
         movies[0] shouldBe Movie(2017, Month.JANUARY, 6, "Underworld: Blood Wars", "Anna Foerster", Genre.ACTION)
         movies[movies.size - 1] shouldBe Movie(
@@ -25,6 +43,7 @@ class USAFilmsParserSpec : StringSpec({
             Genre.DRAMA
         )
         movies[94] shouldBe Movie(2017, Month.MAY, 19, "Everything, Everything", "Stella Meghie", Genre.DRAMA)
+        movies.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
     }
 
     "parse director" {
@@ -50,5 +69,12 @@ class USAFilmsParserSpec : StringSpec({
                 0
             ) shouldBe director
         }
+    }
+
+    "parse rankings" {
+        val parser = USAFilmsParser()
+        val document = Jsoup.parse(File(dataPath), StandardCharsets.UTF_8.name())
+        val rankings = parser.parseRankings(document)
+        rankings shouldBe topFilms
     }
 })
