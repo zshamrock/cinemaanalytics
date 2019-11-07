@@ -1,6 +1,7 @@
 package jfuturedev.cinemaanalytics.parser
 
 import jfuturedev.cinemaanalytics.Environment
+import jfuturedev.cinemaanalytics.domain.Country
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.JsonSource
@@ -97,6 +98,7 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
                     } else {
                         val title = getTitle(data, index)
                         Film(
+                            getCountry(),
                             year,
                             Month.valueOf(month),
                             day,
@@ -136,6 +138,8 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
 
     protected abstract fun getQuarters(document: Document): Elements
 
+    protected abstract fun getCountry(): Country
+
     protected abstract fun getTitle(data: Elements, index: Int): String
 
     internal abstract fun getDirector(data: Elements, index: Int): String
@@ -143,6 +147,6 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
     protected abstract fun getGenres(data: Elements, index: Int): String
 
     private fun parseJson(path: Path): List<Film> {
-        return json.parse(Film.serializer().list, String(Files.readAllBytes(path), StandardCharsets.UTF_8))
+        return json.parse(Film.serializer().list, Files.readAllBytes(path).toString(StandardCharsets.UTF_8))
     }
 }

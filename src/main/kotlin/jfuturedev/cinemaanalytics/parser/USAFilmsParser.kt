@@ -1,6 +1,7 @@
 package jfuturedev.cinemaanalytics.parser
 
 import jfuturedev.cinemaanalytics.Environment
+import jfuturedev.cinemaanalytics.domain.Country
 import kotlinx.serialization.json.Json
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -45,6 +46,10 @@ class USAFilmsParser(json: Json, environment: Environment) : FilmsParser(json, e
                     "section[data-mw-section-id=4] table, " +
                     "section[data-mw-section-id=5] table"
         )
+    }
+
+    override fun getCountry(): Country {
+        return Country.USA
     }
 
     override fun getTitle(data: Elements, index: Int): String {

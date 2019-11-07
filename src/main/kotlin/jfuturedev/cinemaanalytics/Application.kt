@@ -12,8 +12,8 @@ import jfuturedev.cinemaanalytics.parser.USAFilmsParser
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.list
+import kotlinx.serialization.toUtf8Bytes
 import mu.KotlinLogging
-import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -33,6 +33,7 @@ class Application(private val environment: Environment) {
         private const val ANALYTICS_ACTION_PROPERTY = "analytics.action"
         private const val ANALYTICS_MODE_PROPERTY = "analytics.mode"
         private const val ANALYTICS_GENRES_PROPERTY = "analytics.genres"
+        private const val ANALYTICS_TOP_DIRECTORS_PROPERTY = "analytics.topdirectors"
 
         private const val CHINA_SOURCES_PROPERTY = "china.sources"
         private const val USA_SOURCES_PROPERTY = "usa.sources"
@@ -83,9 +84,12 @@ class Application(private val environment: Environment) {
                         parse(usaParser, usaRemoteSources)
                     }
                 }
-                Analytics(chinaFilms, usaFilms)
+                val analytics = Analytics(chinaFilms, usaFilms)
+                analytics
                     .runDynamics(environment.getProperty(ANALYTICS_GENRES_PROPERTY).split(",").map { Genre.valueOf(it) })
                     .print()
+                println("-".repeat(30))
+                analytics.runTopDirectors(environment.getProperty(ANALYTICS_TOP_DIRECTORS_PROPERTY).toInt()).print()
             }
         }
     }
@@ -100,7 +104,7 @@ class Application(private val environment: Environment) {
     private fun flush(films: List<Film>, path: Path) {
         Files.write(
             path,
-            json.stringify(Film.serializer().list, films).toByteArray(StandardCharsets.UTF_8),
+            json.stringify(Film.serializer().list, films).toUtf8Bytes(),
             StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE
         )
     }

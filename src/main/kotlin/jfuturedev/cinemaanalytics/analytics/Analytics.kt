@@ -2,8 +2,14 @@ package jfuturedev.cinemaanalytics.analytics
 
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
+import java.text.NumberFormat
+import java.util.Locale
 
 class Analytics(private val chinaFilms: List<Film>, private val usaFilms: List<Film>) {
+    companion object {
+        @JvmField
+        val US_NUMBER_FORMAT: NumberFormat = NumberFormat.getNumberInstance(Locale.US)
+    }
 
     fun runDynamics(genres: List<Genre>): Report {
         val chinaGroup = groupByYear(chinaFilms)
@@ -19,6 +25,14 @@ class Analytics(private val chinaFilms: List<Film>, private val usaFilms: List<F
 
     private fun countByGenre(group: Map<Int, List<Film>>, genre: Genre) =
         group.mapValues { entry -> entry.value.count { it.genres.contains(genre) } }.toList()
+
+    fun runTopDirectors(top: Int): Report {
+        val films = (chinaFilms + usaFilms).sortedByDescending { it.gross }.take(top)
+        return Report(films.map {
+            val gross = US_NUMBER_FORMAT.format(it.gross)
+            "${it.director} (${it.country}) / ${it.title} / $$gross"
+        })
+    }
 }
 
 data class Report(private val lines: List<String>) {

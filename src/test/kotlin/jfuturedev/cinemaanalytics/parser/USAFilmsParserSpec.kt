@@ -5,6 +5,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
 import jfuturedev.cinemaanalytics.Environment
+import jfuturedev.cinemaanalytics.domain.Country
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
@@ -37,6 +38,7 @@ class USAFilmsParserSpec : StringSpec({
         val films = USAFilmsParser(Json(JsonConfiguration.Stable), Environment()).parse(LocalSource(2017, dataPath))
         films.size shouldBe 238
         films[0] shouldBe Film(
+            Country.USA,
             2017,
             Month.JANUARY,
             6,
@@ -45,6 +47,7 @@ class USAFilmsParserSpec : StringSpec({
             setOf(Genre.ACTION, Genre.HORROR)
         )
         films[films.size - 1] shouldBe Film(
+            Country.USA,
             2017,
             Month.DECEMBER,
             25,
@@ -53,6 +56,7 @@ class USAFilmsParserSpec : StringSpec({
             setOf(Genre.DRAMA)
         )
         films[94] shouldBe Film(
+            Country.USA,
             2017,
             Month.MAY,
             19,

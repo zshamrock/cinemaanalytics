@@ -5,6 +5,7 @@ import java.time.Month
 
 @Serializable
 data class Film(
+    val country: Country,
     val year: Int,
     val month: Month,
     val day: Int,
