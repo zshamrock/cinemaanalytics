@@ -1,7 +1,11 @@
 package jfuturedev.cinemaanalytics.parser
 
 import jfuturedev.cinemaanalytics.Environment
-import jfuturedev.cinemaanalytics.domain.*
+import jfuturedev.cinemaanalytics.domain.Film
+import jfuturedev.cinemaanalytics.domain.Genre
+import jfuturedev.cinemaanalytics.domain.LocalSource
+import jfuturedev.cinemaanalytics.domain.RemoteSource
+import jfuturedev.cinemaanalytics.domain.Source
 import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -9,7 +13,7 @@ import org.jsoup.select.Elements
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.time.Month
-import java.util.*
+import java.util.Locale
 
 private val logger = KotlinLogging.logger {}
 

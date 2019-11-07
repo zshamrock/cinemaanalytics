@@ -1,6 +1,6 @@
 package jfuturedev.cinemaanalytics.domain
 
-import java.util.*
+import java.util.Locale
 
 enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
     ACTION,

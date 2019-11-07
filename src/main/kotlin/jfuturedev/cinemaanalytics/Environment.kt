@@ -1,6 +1,7 @@
 package jfuturedev.cinemaanalytics
 
-import java.util.*
+import java.util.Locale
+import java.util.Properties
 
 class Environment {
     companion object {
