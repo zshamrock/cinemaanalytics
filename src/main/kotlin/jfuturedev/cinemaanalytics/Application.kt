@@ -1,6 +1,8 @@
 package jfuturedev.cinemaanalytics
 
+import jfuturedev.cinemaanalytics.analytics.Analytics
 import jfuturedev.cinemaanalytics.domain.Film
+import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.JsonSource
 import jfuturedev.cinemaanalytics.domain.RemoteSource
 import jfuturedev.cinemaanalytics.domain.Source
@@ -30,6 +32,7 @@ class Application(private val environment: Environment) {
 
         private const val ANALYTICS_ACTION_PROPERTY = "analytics.action"
         private const val ANALYTICS_MODE_PROPERTY = "analytics.mode"
+        private const val ANALYTICS_GENRES_PROPERTY = "analytics.genres"
 
         private const val CHINA_SOURCES_PROPERTY = "china.sources"
         private const val USA_SOURCES_PROPERTY = "usa.sources"
@@ -80,8 +83,9 @@ class Application(private val environment: Environment) {
                         parse(usaParser, usaRemoteSources)
                     }
                 }
-                println(chinaFilms)
-                println(usaFilms)
+                Analytics(chinaFilms, usaFilms)
+                    .runDynamics(environment.getProperty(ANALYTICS_GENRES_PROPERTY).split(",").map { Genre.valueOf(it) })
+                    .print()
             }
         }
     }

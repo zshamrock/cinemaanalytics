@@ -56,4 +56,16 @@ class GenreSpec : StringSpec({
             Genre.parse(genresLine) shouldBe genresSet
         }
     }
+
+    "capitalize title" {
+        forall(
+            row(Genre.DRAMA, "Drama"),
+            row(Genre.COMEDY, "Comedy"),
+            row(Genre.SCI_FI, "Sci-Fi"),
+            row(Genre.POST_APOCALYPTIC, "Post-apocalyptic")
+        ) { genre, title ->
+            genre.capitalize() shouldBe title
+        }
+
+    }
 })

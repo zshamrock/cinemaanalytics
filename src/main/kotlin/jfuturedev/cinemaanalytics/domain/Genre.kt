@@ -74,4 +74,8 @@ enum class Genre(val title: String = "", private val alias: Genre? = null) {
                 .toSet()
         }
     }
+
+    fun capitalize(): String {
+        return title.ifEmpty { name.toLowerCase(Locale.ROOT).capitalize() }
+    }
 }
