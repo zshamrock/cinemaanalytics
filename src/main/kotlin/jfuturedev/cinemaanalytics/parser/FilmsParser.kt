@@ -1,5 +1,6 @@
 package jfuturedev.cinemaanalytics.parser
 
+import jfuturedev.cinemaanalytics.Environment
 import jfuturedev.cinemaanalytics.domain.*
 import mu.KotlinLogging
 import org.jsoup.Jsoup
@@ -12,17 +13,17 @@ import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-abstract class FilmsParser {
+abstract class FilmsParser(private val environment: Environment) {
     companion object {
         private const val BASE_ENDPOINT_REST_URL = "https://en.wikipedia.org/api/rest_v1/page/html"
         private const val HEADER = 1
         private const val DEFAULT_ROWSPAN = "1"
+        private const val USER_AGENT_EMAIL_PROPERTY_NAME = "useragent.email"
     }
 
     private fun getDocument(title: String, revision: String): Document {
         return Jsoup.connect("$BASE_ENDPOINT_REST_URL/$title/$revision")
-            // TODO: Replace with the provided email address from the application.properties
-            .userAgent("")
+            .userAgent(environment.getProperty(USER_AGENT_EMAIL_PROPERTY_NAME))
             .get()
     }
 

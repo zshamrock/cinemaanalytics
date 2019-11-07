@@ -1,9 +1,10 @@
 package jfuturedev.cinemaanalytics.parser
 
+import jfuturedev.cinemaanalytics.Environment
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-class ChinaFilmsParser : FilmsParser() {
+class ChinaFilmsParser(environment: Environment) : FilmsParser(environment) {
     companion object {
         private const val RANKING_TITLE_INDEX = 1
         private const val RANKING_GROSS_INDEX = 2

@@ -2,6 +2,7 @@ package jfuturedev.cinemaanalytics.parser
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import jfuturedev.cinemaanalytics.Environment
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
@@ -27,7 +28,7 @@ private val dataPath = ChinaFilmsParserSpec::class.java.getResource("/data/china
 
 class ChinaFilmsParserSpec : StringSpec({
     "parse local file" {
-        val films = ChinaFilmsParser().parse(LocalSource(2018, dataPath))
+        val films = ChinaFilmsParser(Environment()).parse(LocalSource(2018, dataPath))
         films.size shouldBe 367
         films[0] shouldBe Film(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", Genre.DRAMA)
         films[films.size - 1] shouldBe Film(
@@ -43,7 +44,7 @@ class ChinaFilmsParserSpec : StringSpec({
     }
 
     "parse rankings" {
-        val parser = ChinaFilmsParser()
+        val parser = ChinaFilmsParser(Environment())
         val document = Jsoup.parse(File(dataPath), StandardCharsets.UTF_8.name())
         val rankings = parser.parseRankings(document)
         rankings shouldBe topFilms
