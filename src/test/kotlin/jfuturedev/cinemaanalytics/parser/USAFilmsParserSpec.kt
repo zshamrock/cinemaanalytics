@@ -34,16 +34,30 @@ class USAFilmsParserSpec : StringSpec({
     "parse local file" {
         val films = USAFilmsParser(Environment()).parse(LocalSource(2017, dataPath))
         films.size shouldBe 238
-        films[0] shouldBe Film(2017, Month.JANUARY, 6, "Underworld: Blood Wars", "Anna Foerster", Genre.ACTION)
+        films[0] shouldBe Film(
+            2017,
+            Month.JANUARY,
+            6,
+            "Underworld: Blood Wars",
+            "Anna Foerster",
+            setOf(Genre.ACTION, Genre.HORROR)
+        )
         films[films.size - 1] shouldBe Film(
             2017,
             Month.DECEMBER,
             25,
             "Phantom Thread",
             "Paul Thomas Anderson",
-            Genre.DRAMA
+            setOf(Genre.DRAMA)
         )
-        films[94] shouldBe Film(2017, Month.MAY, 19, "Everything, Everything", "Stella Meghie", Genre.DRAMA)
+        films[94] shouldBe Film(
+            2017,
+            Month.MAY,
+            19,
+            "Everything, Everything",
+            "Stella Meghie",
+            setOf(Genre.DRAMA, Genre.ROMANCE)
+        )
         films.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
     }
 

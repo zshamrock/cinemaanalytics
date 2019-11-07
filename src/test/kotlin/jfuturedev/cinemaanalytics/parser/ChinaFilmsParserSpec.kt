@@ -30,16 +30,23 @@ class ChinaFilmsParserSpec : StringSpec({
     "parse local file" {
         val films = ChinaFilmsParser(Environment()).parse(LocalSource(2018, dataPath))
         films.size shouldBe 367
-        films[0] shouldBe Film(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", Genre.DRAMA)
+        films[0] shouldBe Film(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", setOf(Genre.DRAMA))
         films[films.size - 1] shouldBe Film(
             2018,
             Month.DECEMBER,
             31,
             "Long Day's Journey into Night",
             "Bi Gan",
-            Genre.DRAMA
+            setOf(Genre.DRAMA, Genre.SUSPENSE)
         )
-        films[94] shouldBe Film(2018, Month.MAY, 4, "Hong Kong Rescue", "Liu Yijun", Genre.ACTION)
+        films[94] shouldBe Film(
+            2018,
+            Month.MAY,
+            4,
+            "Hong Kong Rescue",
+            "Liu Yijun",
+            setOf(Genre.ACTION, Genre.DRAMA, Genre.SUSPENSE, Genre.ADVENTURE)
+        )
         films.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
     }
 

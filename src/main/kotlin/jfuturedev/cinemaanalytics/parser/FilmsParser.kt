@@ -80,11 +80,11 @@ abstract class FilmsParser(private val environment: Environment) {
                         logger.debug { "Processing day $day" }
                         openingDayRowSpan = data[index++].attr("rowspan").ifEmpty { DEFAULT_ROWSPAN }.toInt()
                     }
-                    val genres = getGenres(data, index)
-                    val genre = Genre.parse(genres)
-                    val film = if (genre == null) {
+                    val genresLine = getGenres(data, index)
+                    val genres = Genre.parse(genresLine)
+                    val film = if (genres.isEmpty()) {
                         totalSkipped++
-                        logger.warn { "Skip film with unsupported genres $genres / $totalSkipped" }
+                        logger.warn { "Skip film with unsupported genres $genresLine / $totalSkipped" }
                         null
                     } else {
                         val title = getTitle(data, index)
@@ -94,7 +94,7 @@ abstract class FilmsParser(private val environment: Environment) {
                             day,
                             title,
                             getDirector(data, index),
-                            genre,
+                            genres,
                             rankings.getOrDefault(title, Film.UNKNOWN_GROSS)
                         )
                     }
