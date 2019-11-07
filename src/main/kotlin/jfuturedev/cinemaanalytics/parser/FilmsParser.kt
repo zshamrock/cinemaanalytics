@@ -6,6 +6,8 @@ import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import java.io.File
+import java.nio.charset.StandardCharsets
 import java.time.Month
 import java.util.*
 
@@ -25,8 +27,15 @@ abstract class FilmsParser {
             .get()
     }
 
+    fun parse(year: Int, path: String): List<Movie> {
+        return parse(year, Jsoup.parse(File(path), StandardCharsets.UTF_8.name()))
+    }
+
     fun parse(year: Int, title: String, revision: String): List<Movie> {
-        val document = getDocument(title, revision)
+        return parse(year, getDocument(title, revision))
+    }
+
+    private fun parse(year: Int, document: Document): List<Movie> {
         val quarters = getQuarters(document)
         var openingMonthRowSpan = 0
         var openingDayRowSpan = 0
