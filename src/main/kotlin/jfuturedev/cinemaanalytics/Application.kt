@@ -1,7 +1,9 @@
 package jfuturedev.cinemaanalytics
 
 import jfuturedev.cinemaanalytics.domain.Film
+import jfuturedev.cinemaanalytics.domain.JsonSource
 import jfuturedev.cinemaanalytics.domain.RemoteSource
+import jfuturedev.cinemaanalytics.domain.Source
 import jfuturedev.cinemaanalytics.parser.ChinaFilmsParser
 import jfuturedev.cinemaanalytics.parser.FilmsParser
 import jfuturedev.cinemaanalytics.parser.USAFilmsParser
@@ -26,6 +28,18 @@ class Application(private val environment: Environment) {
         private const val SOURCE_TITLE_INDEX = 1
         private const val SOURCE_REVISION_INDEX = 2
 
+        private const val ANALYTICS_ACTION_PROPERTY = "analytics.action"
+        private const val ANALYTICS_MODE_PROPERTY = "analytics.mode"
+
+        private const val CHINA_SOURCES_PROPERTY = "china.sources"
+        private const val USA_SOURCES_PROPERTY = "usa.sources"
+
+        @JvmField
+        val BASE_DATA_PATH: Path = Paths.get("src", "main", "resources", "data")
+
+        private const val CHINA_FILMS_JSON = "chinafilms.json"
+        private const val USA_FILMS_JSON = "usafilms.json"
+
         @JvmStatic
         fun main(args: Array<String>) {
             val application = Application(Environment())
@@ -36,17 +50,46 @@ class Application(private val environment: Environment) {
     private val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))
 
     private fun run() {
-        val action = Action.valueOf(environment.getProperty("analytics.action").toUpperCase(Locale.ROOT))
+        val action = Action.valueOf(environment.getProperty(ANALYTICS_ACTION_PROPERTY).toUpperCase(Locale.ROOT))
+        logger.info { "Running $action command" }
+        val chinaParser = ChinaFilmsParser(json, environment)
+        val chinaRemoteSources = buildRemoteSources(environment.getProperty(CHINA_SOURCES_PROPERTY))
+        val usaParser = USAFilmsParser(json, environment)
+        val usaRemoteSources = buildRemoteSources(environment.getProperty(USA_SOURCES_PROPERTY))
         when (action) {
             Action.FLUSH -> {
-                val base = Paths.get("src", "main", "resources", "data")
-                val chinaFilms = parse(ChinaFilmsParser(environment), environment.getProperty("china.sources"))
-                flush(chinaFilms, base.resolve("chinafilms.json"))
-                val usaFilms = parse(USAFilmsParser(environment), environment.getProperty("usa.sources"))
-                flush(usaFilms, base.resolve("usafilms.json"))
+                flush(parse(chinaParser, chinaRemoteSources), BASE_DATA_PATH.resolve(CHINA_FILMS_JSON))
+                flush(parse(usaParser, usaRemoteSources), BASE_DATA_PATH.resolve(USA_FILMS_JSON))
             }
             Action.RUN -> {
+                val mode = Mode.valueOf(environment.getProperty(ANALYTICS_MODE_PROPERTY).toUpperCase(Locale.ROOT))
+                logger.info { "Running in $mode mode" }
+                val chinaFilms = when (mode) {
+                    Mode.OFFLINE -> {
+                        parse(chinaParser, listOf(JsonSource(BASE_DATA_PATH.resolve(CHINA_FILMS_JSON))))
+                    }
+                    Mode.ONLINE -> {
+                        parse(chinaParser, chinaRemoteSources)
+                    }
+                }
+                val usaFilms = when (mode) {
+                    Mode.OFFLINE -> {
+                        parse(usaParser, listOf(JsonSource(BASE_DATA_PATH.resolve(USA_FILMS_JSON))))
+                    }
+                    Mode.ONLINE -> {
+                        parse(usaParser, usaRemoteSources)
+                    }
+                }
+                println(chinaFilms)
+                println(usaFilms)
             }
+        }
+    }
+
+    private fun buildRemoteSources(sources: String): List<RemoteSource> {
+        return sources.split(SOURCES_SEPARATOR).map {
+            val data = it.split(SOURCE_DATA_SEPARATOR)
+            RemoteSource(data[SOURCE_YEAR_INDEX].toInt(), data[SOURCE_TITLE_INDEX], data[SOURCE_REVISION_INDEX])
         }
     }
 
@@ -58,11 +101,8 @@ class Application(private val environment: Environment) {
         )
     }
 
-    private fun parse(parser: FilmsParser, sources: String): List<Film> {
-        return sources.split(SOURCES_SEPARATOR).map {
-            val data = it.split(SOURCE_DATA_SEPARATOR)
-            RemoteSource(data[SOURCE_YEAR_INDEX].toInt(), data[SOURCE_TITLE_INDEX], data[SOURCE_REVISION_INDEX])
-        }.flatMap {
+    private fun parse(parser: FilmsParser, sources: List<Source>): List<Film> {
+        return sources.flatMap {
             logger.info { "Parsing source $it" }
             parser.parse(it)
         }

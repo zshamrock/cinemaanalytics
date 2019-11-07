@@ -6,6 +6,8 @@ import jfuturedev.cinemaanalytics.Environment
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.jsoup.Jsoup
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -28,7 +30,7 @@ private val dataPath = ChinaFilmsParserSpec::class.java.getResource("/data/china
 
 class ChinaFilmsParserSpec : StringSpec({
     "parse local file" {
-        val films = ChinaFilmsParser(Environment()).parse(LocalSource(2018, dataPath))
+        val films = ChinaFilmsParser(Json(JsonConfiguration.Stable), Environment()).parse(LocalSource(2018, dataPath))
         films.size shouldBe 367
         films[0] shouldBe Film(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", setOf(Genre.DRAMA))
         films[films.size - 1] shouldBe Film(
@@ -51,7 +53,7 @@ class ChinaFilmsParserSpec : StringSpec({
     }
 
     "parse rankings" {
-        val parser = ChinaFilmsParser(Environment())
+        val parser = ChinaFilmsParser(Json(JsonConfiguration.Stable), Environment())
         val document = Jsoup.parse(File(dataPath), StandardCharsets.UTF_8.name())
         val rankings = parser.parseRankings(document)
         rankings shouldBe topFilms

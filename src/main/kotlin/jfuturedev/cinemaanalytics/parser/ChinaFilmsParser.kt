@@ -1,10 +1,11 @@
 package jfuturedev.cinemaanalytics.parser
 
 import jfuturedev.cinemaanalytics.Environment
+import kotlinx.serialization.json.Json
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
-class ChinaFilmsParser(environment: Environment) : FilmsParser(environment) {
+class ChinaFilmsParser(json: Json, environment: Environment) : FilmsParser(json, environment) {
     companion object {
         private const val RANKING_TITLE_INDEX = 1
         private const val RANKING_GROSS_INDEX = 2

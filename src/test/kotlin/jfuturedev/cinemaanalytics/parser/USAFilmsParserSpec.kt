@@ -8,6 +8,8 @@ import jfuturedev.cinemaanalytics.Environment
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -32,7 +34,7 @@ private val dataPath = USAFilmsParserSpec::class.java.getResource("/data/usa-201
 
 class USAFilmsParserSpec : StringSpec({
     "parse local file" {
-        val films = USAFilmsParser(Environment()).parse(LocalSource(2017, dataPath))
+        val films = USAFilmsParser(Json(JsonConfiguration.Stable), Environment()).parse(LocalSource(2017, dataPath))
         films.size shouldBe 238
         films[0] shouldBe Film(
             2017,
@@ -62,7 +64,7 @@ class USAFilmsParserSpec : StringSpec({
     }
 
     "parse director" {
-        val parser = USAFilmsParser(Environment())
+        val parser = USAFilmsParser(Json(JsonConfiguration.Stable), Environment())
         forall(
             row("Pierre Morel (director); Chad St. John (screenplay); Jennifer Garner, John Ortiz", "Pierre Morel"),
             row(
@@ -87,7 +89,7 @@ class USAFilmsParserSpec : StringSpec({
     }
 
     "parse rankings" {
-        val parser = USAFilmsParser(Environment())
+        val parser = USAFilmsParser(Json(JsonConfiguration.Stable), Environment())
         val document = Jsoup.parse(File(dataPath), StandardCharsets.UTF_8.name())
         val rankings = parser.parseRankings(document)
         rankings shouldBe topFilms

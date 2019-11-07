@@ -3,21 +3,26 @@ package jfuturedev.cinemaanalytics.parser
 import jfuturedev.cinemaanalytics.Environment
 import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
+import jfuturedev.cinemaanalytics.domain.JsonSource
 import jfuturedev.cinemaanalytics.domain.LocalSource
 import jfuturedev.cinemaanalytics.domain.RemoteSource
 import jfuturedev.cinemaanalytics.domain.Source
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.list
 import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import java.io.File
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 import java.time.Month
 import java.util.Locale
 
 private val logger = KotlinLogging.logger {}
 
-abstract class FilmsParser(private val environment: Environment) {
+abstract class FilmsParser(private val json: Json, private val environment: Environment) {
     companion object {
         private const val BASE_ENDPOINT_REST_URL = "https://en.wikipedia.org/api/rest_v1/page/html"
         private const val HEADER = 1
@@ -40,6 +45,9 @@ abstract class FilmsParser(private val environment: Environment) {
             }
             is LocalSource -> {
                 parse(source.year, source.path)
+            }
+            is JsonSource -> {
+                parseJson(source.path)
             }
         }
     }
@@ -133,4 +141,8 @@ abstract class FilmsParser(private val environment: Environment) {
     internal abstract fun getDirector(data: Elements, index: Int): String
 
     protected abstract fun getGenres(data: Elements, index: Int): String
+
+    private fun parseJson(path: Path): List<Film> {
+        return json.parse(Film.serializer().list, String(Files.readAllBytes(path), StandardCharsets.UTF_8))
+    }
 }
