@@ -6,14 +6,14 @@ import jfuturedev.cinemaanalytics.parser.ChinaFilmsParser
 import jfuturedev.cinemaanalytics.parser.FilmsParser
 import jfuturedev.cinemaanalytics.parser.USAFilmsParser
 
-class Application(environment: Environment) {
+class Application {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
             val environment = Environment()
-            val application = Application(environment)
+            val application = Application()
             application.parse(
-                ChinaFilmsParser(Environment()),
+                ChinaFilmsParser(environment),
                 listOf(
                     RemoteSource(2017, "List of Chinese films of 2017", "923009452"),
                     RemoteSource(2018, "List of Chinese films of 2018", "900037799"),
@@ -21,7 +21,7 @@ class Application(environment: Environment) {
                 )
             )
             application.parse(
-                USAFilmsParser(Environment()),
+                USAFilmsParser(environment),
                 listOf(
                     RemoteSource(2017, "List of American films of 2017", "919547236"),
                     RemoteSource(2018, "List of American films of 2018", "924688872"),

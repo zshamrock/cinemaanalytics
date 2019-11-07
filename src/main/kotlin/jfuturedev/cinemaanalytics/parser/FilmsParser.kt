@@ -22,8 +22,10 @@ abstract class FilmsParser(private val environment: Environment) {
     }
 
     private fun getDocument(title: String, revision: String): Document {
+        val userAgent = environment.getProperty(USER_AGENT_EMAIL_PROPERTY_NAME)
+        logger.info { "Using $userAgent as the User-Agent value for the REST API" }
         return Jsoup.connect("$BASE_ENDPOINT_REST_URL/$title/$revision")
-            .userAgent(environment.getProperty(USER_AGENT_EMAIL_PROPERTY_NAME))
+            .userAgent(userAgent)
             .get()
     }
 
