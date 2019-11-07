@@ -1,7 +1,9 @@
 package jfuturedev.cinemaanalytics.domain
 
+import kotlinx.serialization.Serializable
 import java.time.Month
 
+@Serializable
 data class Film(
     val year: Int,
     val month: Month,
