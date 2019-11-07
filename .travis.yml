@@ -6,7 +6,7 @@ dist: bionic
 jdk: openjdk11
 
 script:
-  - ./gradlew check -s
+  - gradle check -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
