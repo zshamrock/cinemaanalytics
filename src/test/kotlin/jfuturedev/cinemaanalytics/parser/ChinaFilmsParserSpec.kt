@@ -2,9 +2,9 @@ package jfuturedev.cinemaanalytics.parser
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
+import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
-import jfuturedev.cinemaanalytics.domain.Movie
 import org.jsoup.Jsoup
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -27,10 +27,10 @@ private val dataPath = ChinaFilmsParserSpec::class.java.getResource("/data/china
 
 class ChinaFilmsParserSpec : StringSpec({
     "parse local file" {
-        val movies = ChinaFilmsParser().parse(LocalSource(2018, dataPath))
-        movies.size shouldBe 367
-        movies[0] shouldBe Movie(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", Genre.DRAMA)
-        movies[movies.size - 1] shouldBe Movie(
+        val films = ChinaFilmsParser().parse(LocalSource(2018, dataPath))
+        films.size shouldBe 367
+        films[0] shouldBe Film(2018, Month.JANUARY, 5, "Come On Teacher", "Wu Shengji", Genre.DRAMA)
+        films[films.size - 1] shouldBe Film(
             2018,
             Month.DECEMBER,
             31,
@@ -38,8 +38,8 @@ class ChinaFilmsParserSpec : StringSpec({
             "Bi Gan",
             Genre.DRAMA
         )
-        movies[94] shouldBe Movie(2018, Month.MAY, 4, "Hong Kong Rescue", "Liu Yijun", Genre.ACTION)
-        movies.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
+        films[94] shouldBe Film(2018, Month.MAY, 4, "Hong Kong Rescue", "Liu Yijun", Genre.ACTION)
+        films.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
     }
 
     "parse rankings" {

@@ -2,7 +2,7 @@ package jfuturedev.cinemaanalytics.domain
 
 import java.time.Month
 
-data class Movie(
+data class Film(
     val year: Int,
     val month: Month,
     val day: Int,

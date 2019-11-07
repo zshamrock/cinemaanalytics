@@ -4,9 +4,9 @@ import io.kotlintest.data.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row
+import jfuturedev.cinemaanalytics.domain.Film
 import jfuturedev.cinemaanalytics.domain.Genre
 import jfuturedev.cinemaanalytics.domain.LocalSource
-import jfuturedev.cinemaanalytics.domain.Movie
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -31,10 +31,10 @@ private val dataPath = USAFilmsParserSpec::class.java.getResource("/data/usa-201
 
 class USAFilmsParserSpec : StringSpec({
     "parse local file" {
-        val movies = USAFilmsParser().parse(LocalSource(2017, dataPath))
-        movies.size shouldBe 238
-        movies[0] shouldBe Movie(2017, Month.JANUARY, 6, "Underworld: Blood Wars", "Anna Foerster", Genre.ACTION)
-        movies[movies.size - 1] shouldBe Movie(
+        val films = USAFilmsParser().parse(LocalSource(2017, dataPath))
+        films.size shouldBe 238
+        films[0] shouldBe Film(2017, Month.JANUARY, 6, "Underworld: Blood Wars", "Anna Foerster", Genre.ACTION)
+        films[films.size - 1] shouldBe Film(
             2017,
             Month.DECEMBER,
             25,
@@ -42,8 +42,8 @@ class USAFilmsParserSpec : StringSpec({
             "Paul Thomas Anderson",
             Genre.DRAMA
         )
-        movies[94] shouldBe Movie(2017, Month.MAY, 19, "Everything, Everything", "Stella Meghie", Genre.DRAMA)
-        movies.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
+        films[94] shouldBe Film(2017, Month.MAY, 19, "Everything, Everything", "Stella Meghie", Genre.DRAMA)
+        films.sortedByDescending { it.gross }.take(10).associate { Pair(it.title, it.gross) } shouldBe topFilms
     }
 
     "parse director" {

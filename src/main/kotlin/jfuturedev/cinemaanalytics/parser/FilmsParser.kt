@@ -26,7 +26,7 @@ abstract class FilmsParser {
             .get()
     }
 
-    fun parse(source: Source): List<Movie> {
+    fun parse(source: Source): List<Film> {
         return when (source) {
             is RemoteSource -> {
                 parse(source.year, source.title, source.revision)
@@ -37,15 +37,15 @@ abstract class FilmsParser {
         }
     }
 
-    private fun parse(year: Int, path: String): List<Movie> {
+    private fun parse(year: Int, path: String): List<Film> {
         return parse(year, Jsoup.parse(File(path), StandardCharsets.UTF_8.name()))
     }
 
-    private fun parse(year: Int, title: String, revision: String): List<Movie> {
+    private fun parse(year: Int, title: String, revision: String): List<Film> {
         return parse(year, getDocument(title, revision))
     }
 
-    private fun parse(year: Int, document: Document): List<Movie> {
+    private fun parse(year: Int, document: Document): List<Film> {
         val rankings = parseRankings(document)
         val quarters = getQuarters(document)
         var openingMonthRowSpan = 0
@@ -75,26 +75,26 @@ abstract class FilmsParser {
                     }
                     val genres = getGenres(data, index)
                     val genre = Genre.parse(genres)
-                    val movie = if (genre == null) {
+                    val film = if (genre == null) {
                         totalSkipped++
-                        logger.warn { "Skip movie with unsupported genres $genres / $totalSkipped" }
+                        logger.warn { "Skip film with unsupported genres $genres / $totalSkipped" }
                         null
                     } else {
                         val title = getTitle(data, index)
-                        Movie(
+                        Film(
                             year,
                             Month.valueOf(month),
                             day,
                             title,
                             getDirector(data, index),
                             genre,
-                            rankings.getOrDefault(title, Movie.UNKNOWN_GROSS)
+                            rankings.getOrDefault(title, Film.UNKNOWN_GROSS)
                         )
                     }
                     openingDayRowSpan--
                     openingMonthRowSpan--
-                    movie?.let { logger.debug { it } }
-                    movie
+                    film?.let { logger.debug { it } }
+                    film
                 }
             }
         }
