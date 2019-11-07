@@ -5,22 +5,22 @@ import java.util.Locale
 private val genresMap =
     Genre.values().associateBy { genre -> genre.title.ifEmpty { genre.name }.toLowerCase(Locale.ROOT) }
 
-enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
+enum class Genre(val title: String = "", private val alias: Genre? = null) {
     ACTION,
     ADVENTURE,
     ANIMATION,
     ANIME,
     BIBLICAL,
     BIOGRAPHICAL,
-    BIOGRAPHY(alias = setOf(BIOGRAPHICAL)),
+    BIOGRAPHY(alias = BIOGRAPHICAL),
     BIOPIC,
     CHILDREN,
-    CHILD(alias = setOf(CHILDREN)),
+    CHILD(alias = CHILDREN),
     COMEDY,
     COMEDY_DRAMA("Comedy-Drama"),
     COSTUME,
     CRIME,
-    DRAMEDY(alias = setOf(COMEDY_DRAMA)),
+    DRAMEDY(alias = COMEDY_DRAMA),
     DISASTER,
     DOCUMENTARY,
     DRAMA,
@@ -30,12 +30,12 @@ enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
     FANTASY,
     HEIST,
     HISTORY,
-    HISTORICAL(alias = setOf(HISTORY)),
+    HISTORICAL(alias = HISTORY),
     HORROR,
-    KIDS(alias = setOf(CHILDREN)),
+    KIDS(alias = CHILDREN),
     LOVE,
     MARTIAL,
-    MARTIAL_ARTS("Martial Arts", alias = setOf(MARTIAL)),
+    MARTIAL_ARTS("Martial Arts", alias = MARTIAL),
     MOCKUMENTARY,
     MOVEMENT,
     MUSIC,
@@ -48,10 +48,10 @@ enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
     PUPPET,
     ROMANCE,
     SCI_FI("Sci-Fi"),
-    SCIENCE_FICTION("Science fiction", alias = setOf(SCI_FI)),
+    SCIENCE_FICTION("Science fiction", alias = SCI_FI),
     SONG_AND_DANCE("Song and Dance"),
     SPORT,
-    SPORTS(alias = setOf(SPORT)),
+    SPORTS(alias = SPORT),
     SPY,
     STORY,
     SUPERHERO,
@@ -67,7 +67,10 @@ enum class Genre(val title: String = "", alias: Set<Genre> = emptySet()) {
     companion object {
         @JvmStatic
         fun parse(genresLine: String): Set<Genre> {
-            return genresLine.split(",", "/").map { it.trim().toLowerCase(Locale.ROOT) }.mapNotNull { genresMap[it] }
+            return genresLine.split(",", "/")
+                .map { it.trim().toLowerCase(Locale.ROOT) }
+                .mapNotNull { genresMap[it] }
+                .map { it.alias ?: it }
                 .toSet()
         }
     }

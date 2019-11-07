@@ -20,12 +20,15 @@ class GenreSpec : StringSpec({
                     Genre.NEO_NOIR,
                     Genre.POST_APOCALYPTIC,
                     Genre.SCI_FI,
-                    Genre.SCIENCE_FICTION,
                     Genre.SONG_AND_DANCE,
                     Genre.COMEDY_DRAMA,
-                    Genre.MARTIAL_ARTS,
+                    Genre.MARTIAL,
                     Genre.POLITICAL_SATIRE_COMEDY
                 )
+            ),
+            row(
+                "Biography / Child / Dramedy / Historical / Kids / Sports",
+                setOf(Genre.BIOGRAPHICAL, Genre.CHILDREN, Genre.COMEDY_DRAMA, Genre.HISTORY, Genre.SPORT)
             ),
             row("Computer", setOf()),
             row("Drama, Action, Romance", setOf(Genre.DRAMA, Genre.ACTION, Genre.ROMANCE)),
@@ -39,12 +42,15 @@ class GenreSpec : StringSpec({
                     Genre.NEO_NOIR,
                     Genre.POST_APOCALYPTIC,
                     Genre.SCI_FI,
-                    Genre.SCIENCE_FICTION,
                     Genre.SONG_AND_DANCE,
                     Genre.COMEDY_DRAMA,
-                    Genre.MARTIAL_ARTS,
+                    Genre.MARTIAL,
                     Genre.POLITICAL_SATIRE_COMEDY
                 )
+            ),
+            row(
+                "Biography, Child, Dramedy, Historical, Kids, Sports",
+                setOf(Genre.BIOGRAPHICAL, Genre.CHILDREN, Genre.COMEDY_DRAMA, Genre.HISTORY, Genre.SPORT)
             )
         ) { genresLine, genresSet ->
             Genre.parse(genresLine) shouldBe genresSet
