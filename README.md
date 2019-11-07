@@ -1,4 +1,5 @@
-# cinemaanalytics
+# cinemaanalytics [![Build Status](https://travis-ci.org/zshamrock/cinemaanalytics.svg?branch=master)](https://travis-ci.org/zshamrock/cinemaanalytics) 
+
 JFuture 2019 Cinema Analytics System Challenge
 
 ## Challenge
