@@ -30,5 +30,5 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
-    <logger name="jfuturedev.cinemaanalytics" level="WARN"/>
+    <logger name="jfuturedev.cinemaanalytics" level="INFO"/>
 </configuration>

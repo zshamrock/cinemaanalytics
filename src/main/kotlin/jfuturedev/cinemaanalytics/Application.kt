@@ -1,39 +1,37 @@
 package jfuturedev.cinemaanalytics
 
 import jfuturedev.cinemaanalytics.domain.RemoteSource
-import jfuturedev.cinemaanalytics.domain.Source
 import jfuturedev.cinemaanalytics.parser.ChinaFilmsParser
 import jfuturedev.cinemaanalytics.parser.FilmsParser
 import jfuturedev.cinemaanalytics.parser.USAFilmsParser
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class Application {
     companion object {
+        private const val SOURCES_SEPARATOR = ";"
+        private const val SOURCE_DATA_SEPARATOR = ","
+        private const val SOURCE_YEAR_INDEX = 0
+        private const val SOURCE_TITLE_INDEX = 1
+        private const val SOURCE_REVISION_INDEX = 2
+
         @JvmStatic
         fun main(args: Array<String>) {
             val environment = Environment()
             val application = Application()
-            application.parse(
-                ChinaFilmsParser(environment),
-                listOf(
-                    RemoteSource(2017, "List of Chinese films of 2017", "923009452"),
-                    RemoteSource(2018, "List of Chinese films of 2018", "900037799"),
-                    RemoteSource(2019, "List of Chinese films of 2019", "924830579")
-                )
-            )
-            application.parse(
-                USAFilmsParser(environment),
-                listOf(
-                    RemoteSource(2017, "List of American films of 2017", "919547236"),
-                    RemoteSource(2018, "List of American films of 2018", "924688872"),
-                    RemoteSource(2019, "List of American films of 2019", "924869832")
-                )
-            )
+            application.parse(ChinaFilmsParser(environment), environment.getProperty("china.sources"))
+            application.parse(USAFilmsParser(environment), environment.getProperty("usa.sources"))
         }
     }
 
-    private fun parse(
-        parser: FilmsParser, sources: List<Source>
-    ) {
-        sources.forEach { parser.parse(it) }
+    private fun parse(parser: FilmsParser, sources: String) {
+        sources.split(SOURCES_SEPARATOR).map {
+            val data = it.split(SOURCE_DATA_SEPARATOR)
+            RemoteSource(data[SOURCE_YEAR_INDEX].toInt(), data[SOURCE_TITLE_INDEX], data[SOURCE_REVISION_INDEX])
+        }.forEach {
+            logger.info { "Parsing source $it" }
+            parser.parse(it)
+        }
     }
 }
