@@ -25,7 +25,9 @@ chance of duplicate films with the same title per year per country.
 3. The actual output format for the "top 5 Directors of the highest-rated films" has not been explicitly specified, so 
 it is set to "Director (Country) / Title (month day, year) / Gross (in USD)".
 
-4. Criteria for choosing the highest-rated films is based on the gross (in USD) value of the film.
+4. "Top 5 Directors of the highest-rated films" query is run on top of the whole data set, not per country.
+
+5. Criteria for choosing the highest-rated films is based on the gross (in USD) value of the film.
 
 ## Information gathering and calculation
 
