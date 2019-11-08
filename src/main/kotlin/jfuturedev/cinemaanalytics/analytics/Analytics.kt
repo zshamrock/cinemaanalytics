@@ -30,7 +30,7 @@ class Analytics(private val chinaFilms: List<Film>, private val usaFilms: List<F
         val films = (chinaFilms + usaFilms).sortedByDescending { it.gross }.take(top)
         return Report(films.map {
             val gross = US_NUMBER_FORMAT.format(it.gross)
-            "${it.director} (${it.country}) / ${it.title} / $$gross"
+            "${it.director} (${it.country}) / ${it.title} (${it.month} ${it.day}, ${it.year}) / $$gross"
         })
     }
 }

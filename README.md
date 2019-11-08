@@ -23,7 +23,7 @@ link to the Wikipedia page.
 chance of duplicate films with the same title per year per country.
 
 3. The actual output format for the "top 5 Directors of the highest-rated films" has not been explicitly specified, so 
-it is set to "Director (Country) / Title / Gross (in USD)".
+it is set to "Director (Country) / Title (month day, year) / Gross (in USD)".
 
 4. Criteria for choosing the highest-rated films is based on the gross (in USD) value of the film.
 
@@ -99,11 +99,11 @@ Sci-Fi, 2017: China - 5 films; USA - 30. Sci-Fi, 2018: China - 5 films; USA - 25
 History, 2017: China - 12 films; USA - 3. History, 2018: China - 4 films; USA - 4. History, 2019: China - 3 films; USA - 1.
 Fantasy, 2017: China - 34 films; USA - 19. Fantasy, 2018: China - 32 films; USA - 20. Fantasy, 2019: China - 10 films; USA - 20.
 ------------------------------
-Anthony and Joe Russo (USA) / Avengers: Endgame / $858,373,000
-Wu Jing (CHINA) / Wolf Warriors 2 / $854,248,869
-Yu Yang (CHINA) / Nezha / $710,400,000
-Ryan Coogler (USA) / Black Panther / $700,059,566
-Anthony Russo and Joe Russo (USA) / Avengers: Infinity War / $678,815,482
+Anthony and Joe Russo (USA) / Avengers: Endgame (APRIL 26, 2019) / $858,373,000
+Wu Jing (CHINA) / Wolf Warriors 2 (JULY 27, 2017) / $854,248,869
+Yu Yang (CHINA) / Nezha (JULY 26, 2019) / $710,400,000
+Ryan Coogler (USA) / Black Panther (FEBRUARY 16, 2018) / $700,059,566
+Anthony Russo and Joe Russo (USA) / Avengers: Infinity War (APRIL 27, 2018) / $678,815,482
 ```
 
 ## License
