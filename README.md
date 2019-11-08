@@ -84,20 +84,11 @@ i.e. `analytics.action` becomes `ANALYTICS_ACTION`
           
 ## Running
 
-Unix:
 ```
-./gradlew -q run
-```
-
-Windows:
-```
-./gradlew.bat -q run
+gradle -q run
 ```
 
-Or if you already have Gradle installed (otherwise the best way to install Gradle is by using 
-[SDKMAN](https://sdkman.io/) `sdk install gradle`), then in the above commands you can replace `./gradlew[.bat]` with 
-`gradle`.
- 
+It assumes you have Gradle installed. Otherwise it is easy to install it with [SDKMAN](https://sdkman.io/): `sdk install gradle`.
 
 ## Output
 
