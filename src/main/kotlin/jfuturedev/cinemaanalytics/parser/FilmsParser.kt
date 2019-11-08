@@ -68,7 +68,7 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
         var openingDayRowSpan = 0
         var totalSkipped = 0
         var month: String = Month.JANUARY.name
-        var day: Int = 1
+        var day = 1
         return quarters.take(4).map { it.select("tr") }.flatMap { rows ->
             rows.drop(HEADER).mapNotNull { row ->
                 val data = row.children()
