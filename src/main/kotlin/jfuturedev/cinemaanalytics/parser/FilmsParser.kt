@@ -42,10 +42,10 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
     fun parse(source: Source): List<Film> {
         return when (source) {
             is RemoteSource -> {
-                parse(source.year, source.title, source.revision)
+                parseHtml(source.year, source.title, source.revision)
             }
             is LocalSource -> {
-                parse(source.year, source.path)
+                parseHtml(source.year, source.path)
             }
             is JsonSource -> {
                 parseJson(source.path)
@@ -53,15 +53,15 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
         }
     }
 
-    private fun parse(year: Int, path: String): List<Film> {
-        return parse(year, Jsoup.parse(File(path), StandardCharsets.UTF_8.name()))
+    private fun parseHtml(year: Int, path: String): List<Film> {
+        return parseHtml(year, Jsoup.parse(File(path), StandardCharsets.UTF_8.name()))
     }
 
-    private fun parse(year: Int, title: String, revision: String): List<Film> {
-        return parse(year, getDocument(title, revision))
+    private fun parseHtml(year: Int, title: String, revision: String): List<Film> {
+        return parseHtml(year, getDocument(title, revision))
     }
 
-    private fun parse(year: Int, document: Document): List<Film> {
+    private fun parseHtml(year: Int, document: Document): List<Film> {
         val rankings = parseRankings(document)
         val quarters = getQuarters(document)
         var openingMonthRowSpan = 0
