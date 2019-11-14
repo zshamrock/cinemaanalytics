@@ -68,22 +68,8 @@ class Application(private val environment: Environment) {
             Action.RUN -> {
                 val mode = Mode.valueOf(environment.getProperty(ANALYTICS_MODE_PROPERTY).toUpperCase(Locale.ROOT))
                 logger.info { "Running in $mode mode" }
-                val chinaFilms = when (mode) {
-                    Mode.OFFLINE -> {
-                        parse(chinaParser, listOf(JsonSource(BASE_DATA_PATH.resolve(CHINA_FILMS_JSON))))
-                    }
-                    Mode.ONLINE -> {
-                        parse(chinaParser, chinaRemoteSources)
-                    }
-                }
-                val usaFilms = when (mode) {
-                    Mode.OFFLINE -> {
-                        parse(usaParser, listOf(JsonSource(BASE_DATA_PATH.resolve(USA_FILMS_JSON))))
-                    }
-                    Mode.ONLINE -> {
-                        parse(usaParser, usaRemoteSources)
-                    }
-                }
+                val chinaFilms = parseFilms(mode, chinaParser, chinaRemoteSources, CHINA_FILMS_JSON)
+                val usaFilms = parseFilms(mode, usaParser, usaRemoteSources, USA_FILMS_JSON)
                 val analytics = Analytics(chinaFilms, usaFilms)
                 analytics
                     .runDynamics(environment.getProperty(ANALYTICS_GENRES_PROPERTY).split(",").map { Genre.valueOf(it) })
@@ -107,6 +93,18 @@ class Application(private val environment: Environment) {
             json.stringify(Film.serializer().list, films).toUtf8Bytes(),
             StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE
         )
+    }
+
+    private fun parseFilms(mode: Mode, parser: FilmsParser, remoteSources: List<RemoteSource>, jsonDataFile: String):
+            List<Film> {
+        return when (mode) {
+            Mode.OFFLINE -> {
+                parse(parser, listOf(JsonSource(BASE_DATA_PATH.resolve(jsonDataFile))))
+            }
+            Mode.ONLINE -> {
+                parse(parser, remoteSources)
+            }
+        }
     }
 
     private fun parse(parser: FilmsParser, sources: List<Source>): List<Film> {
