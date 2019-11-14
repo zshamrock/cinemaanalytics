@@ -72,11 +72,11 @@ class AnalyticsSpec : StringSpec({
     "display top 5 directors of the highest-rated films" {
         Analytics(chinaFilms, usaFilms).runTopDirectors(5) shouldBe Report(
             listOf(
-                "D5 (CHINA) / T5 (FEBRUARY 5, 2018) / $89,635,352",
-                "D6 (USA) / T6 (JANUARY 3, 2017) / $36,548,976",
-                "D3 (CHINA) / T3 (JANUARY 3, 2017) / $3,456,123",
-                "D7 (USA) / T7 (FEBRUARY 3, 2018) / $976,534",
-                "D4 (CHINA) / T4 (JANUARY 4, 2017) / $625,837"
+                "D5 (CHINA) / T5 (FEBRUARY 5, 2018) / $89,635,352 / [Comedy, Sci-Fi]",
+                "D6 (USA) / T6 (JANUARY 3, 2017) / $36,548,976 / [Comedy, Fantasy]",
+                "D3 (CHINA) / T3 (JANUARY 3, 2017) / $3,456,123 / [Fantasy, Sci-Fi]",
+                "D7 (USA) / T7 (FEBRUARY 3, 2018) / $976,534 / [Comedy, Drama]",
+                "D4 (CHINA) / T4 (JANUARY 4, 2017) / $625,837 / [Fantasy, Sci-Fi]"
             )
         )
     }
