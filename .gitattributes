@@ -1,1 +1,2 @@
-data/* linguist-generated=true
+src/main/resources/data/*.json linguist-generated=true
+src/test/resources/data/*.html linguist-generated=true
