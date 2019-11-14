@@ -51,7 +51,7 @@ class Application(private val environment: Environment) {
         }
     }
 
-    private val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true))
+    private val json = Json(JsonConfiguration.Stable.copy(prettyPrint = true, indent = "  "))
 
     private fun run() {
         val action = Action.valueOf(environment.getProperty(ANALYTICS_ACTION_PROPERTY).toUpperCase(Locale.ROOT))
