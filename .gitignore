@@ -25,9 +25,6 @@ hs_err_pid*
 build
 .gradle
 
-# Data
-data/
-
 # IDEA
 .idea/
 
