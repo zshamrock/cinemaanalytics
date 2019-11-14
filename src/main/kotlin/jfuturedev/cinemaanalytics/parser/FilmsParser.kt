@@ -20,6 +20,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Month
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
@@ -29,6 +30,7 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
         private const val HEADER = 1
         private const val DEFAULT_ROWSPAN = "1"
         private const val USER_AGENT_EMAIL_PROPERTY_NAME = "useragent.email"
+        private val DATA_FETCH_TIMEOUT = TimeUnit.MINUTES.toMillis(1).toInt()
     }
 
     private fun getDocument(title: String, revision: String): Document {
@@ -36,6 +38,7 @@ abstract class FilmsParser(private val json: Json, private val environment: Envi
         logger.info { "Using $userAgent as the User-Agent value for the REST API" }
         return Jsoup.connect("$BASE_ENDPOINT_REST_URL/$title/$revision")
             .userAgent(userAgent)
+            .timeout(DATA_FETCH_TIMEOUT)
             .get()
     }
 
